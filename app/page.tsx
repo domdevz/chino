@@ -73,24 +73,15 @@ const liveCasino: GameCard[] = [
 ];
 
 const promoBanners = [
-  {
-    title: "Boost Your Level Up!",
-    sub: "Earn more rewards as you rank up.",
-    badge: "Refreshed!",
-    image: "/images/promo-boost.jpg",
-  },
-  {
-    title: "$30,000 Wreck the Reels",
-    sub: "Hit all target multipliers to unlock prizes.",
-    badge: "New Tournament",
-    image: "/images/promo-wreck.jpg",
-  },
-  {
-    title: "$20,000 SHFL Challenge",
-    sub: "Hit 200x on Merge Up 2 to unlock prizes.",
-    badge: "SHFL Exclusive",
-    image: "/images/promo-challenge.jpg",
-  },
+  "/images/promo1.png",
+  "/images/promo2.png",
+  "/images/promo3.webp",
+  "/images/promo4.png",
+  "/images/promo5.webp",
+  "/images/promo6.webp",
+  "/images/promo7.png",
+  "/images/promo8.png",
+  "/images/promo9.png",
 ];
 
 const promoTabs = [
@@ -103,11 +94,13 @@ const promoTabs = [
 
 export default function App() {
   const name = "Guest";
+  const promoRowRef = useRef<HTMLDivElement | null>(null);
   const shuffleRowRef = useRef<HTMLDivElement | null>(null);
   const slotRowRef = useRef<HTMLDivElement | null>(null);
   const liveRowRef = useRef<HTMLDivElement | null>(null);
   const [activePromoTab, setActivePromoTab] = useState(promoTabs[0].label);
   const [shadows, setShadows] = useState({
+    promo: { left: false, right: false },
     shuffle: { left: false, right: false },
     slot: { left: false, right: false },
     live: { left: false, right: false },
@@ -116,20 +109,7 @@ export default function App() {
   const animateScroll = (ref: React.RefObject<HTMLDivElement>, delta: number) => {
     const el = ref.current;
     if (!el) return;
-    const start = el.scrollLeft;
-    const target = start + delta;
-    const duration = 400;
-    const ease = (t: number) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
-    const startTime = performance.now();
-
-    const step = (now: number) => {
-      const elapsed = now - startTime;
-      const t = Math.min(elapsed / duration, 1);
-      el.scrollLeft = start + (target - start) * ease(t);
-      if (t < 1) requestAnimationFrame(step);
-    };
-
-    requestAnimationFrame(step);
+    el.scrollLeft = el.scrollLeft + delta;
   };
 
   const scrollRow = (ref: React.RefObject<HTMLDivElement>, dir: number) => () => {
@@ -139,7 +119,10 @@ export default function App() {
     animateScroll(ref, delta);
   };
 
-  const updateShadows = (key: "shuffle" | "slot" | "live", ref: React.RefObject<HTMLDivElement>) => {
+  const updateShadows = (
+    key: "promo" | "shuffle" | "slot" | "live",
+    ref: React.RefObject<HTMLDivElement>
+  ) => {
     const el = ref.current;
     if (!el) return;
     const { scrollLeft, scrollWidth, clientWidth } = el;
@@ -153,16 +136,27 @@ export default function App() {
   };
 
   useEffect(() => {
-    const refs: Array<["shuffle" | "slot" | "live", React.RefObject<HTMLDivElement>]> = [
+    const refs: Array<["promo" | "shuffle" | "slot" | "live", React.RefObject<HTMLDivElement>]> = [
+      ["promo", promoRowRef],
       ["shuffle", shuffleRowRef],
       ["slot", slotRowRef],
       ["live", liveRowRef],
     ];
 
+    let rafId: number | null = null;
+    const throttledUpdate = (key: "promo" | "shuffle" | "slot" | "live", ref: React.RefObject<HTMLDivElement>) => {
+      if (rafId === null) {
+        rafId = requestAnimationFrame(() => {
+          updateShadows(key, ref);
+          rafId = null;
+        });
+      }
+    };
+
     const handleResize = () => refs.forEach(([key, ref]) => updateShadows(key, ref));
     const handlers = refs.map(([key, ref]) => {
-      const h = () => updateShadows(key, ref);
-      ref.current?.addEventListener("scroll", h);
+      const h = () => throttledUpdate(key, ref);
+      ref.current?.addEventListener("scroll", h, { passive: true });
       return [ref, h] as const;
     });
 
@@ -170,6 +164,7 @@ export default function App() {
     window.addEventListener("resize", handleResize);
 
     return () => {
+      if (rafId !== null) cancelAnimationFrame(rafId);
       handlers.forEach(([ref, h]) => ref.current?.removeEventListener("scroll", h));
       window.removeEventListener("resize", handleResize);
     };
@@ -179,10 +174,9 @@ export default function App() {
     <div className="shell">
       <header className="topbar">
         <div className="topbar-inner">
-          <div className="brand">Chino</div>
-          <div className="top-banner" aria-hidden="true" />
+          <div className="brand-logo" aria-label="Shuffle logo" />
           <div className="actions">
-            <button className="btn login rectangular">LogIn</button>
+            <button className="btn login rectangular">Login</button>
             <button className="btn btn-primary rectangular">Register</button>
           </div>
         </div>
@@ -208,7 +202,34 @@ export default function App() {
 
         <main className="main">
           <section className="promo-section">
-            <div className="promo-blank" />
+            <div className="promo-wrap">
+              <button
+                className={`promo-scroll left${shadows.promo.left ? " visible" : ""}`}
+                onClick={scrollRow(promoRowRef, -1)}
+                disabled={!shadows.promo.left}
+                aria-label="Scroll promos left"
+              >
+                <img src="/images/leftarrow.svg" alt="" />
+              </button>
+              <div
+                className={`promo-carousel${shadows.promo.left ? " has-left" : ""}${shadows.promo.right ? " has-right" : ""}`}
+                ref={promoRowRef}
+              >
+                {promoBanners.map((src, idx) => (
+                  <a key={src + idx} className="promo-card" href={src}>
+                    <img src={src} alt="" />
+                  </a>
+                ))}
+              </div>
+              <button
+                className={`promo-scroll right${shadows.promo.right ? " visible" : ""}`}
+                onClick={scrollRow(promoRowRef, 1)}
+                disabled={!shadows.promo.right}
+                aria-label="Scroll promos right"
+              >
+                <img src="/images/rightarrow.svg" alt="" />
+              </button>
+            </div>
             <div className="promo-top-row">
               <div className="promo-tabs">
                 {promoTabs.map((tab, i) => (
