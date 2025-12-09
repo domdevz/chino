@@ -2,7 +2,6 @@
 
 import "./app.css";
 import "@aws-amplify/ui-react/styles.css";
-import { useAuthenticator } from "@aws-amplify/ui-react";
 import { useEffect, useRef, useState } from "react";
 import { Amplify } from "aws-amplify";
 import outputs from "@/amplify_outputs.json";
@@ -103,8 +102,7 @@ const promoTabs = [
 ];
 
 export default function App() {
-  const { signOut, user } = useAuthenticator((context) => [context.user]);
-  const name = user?.username ?? "Guest";
+  const name = "Guest";
   const shuffleRowRef = useRef<HTMLDivElement | null>(null);
   const slotRowRef = useRef<HTMLDivElement | null>(null);
   const liveRowRef = useRef<HTMLDivElement | null>(null);
