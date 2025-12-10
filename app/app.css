@@ -60,10 +60,10 @@ a {
   background-size: auto;
   display: block;
   overflow: hidden;
-  transform: scale(0.50);
+  transform: translateY(-2px) scale(0.50);
   transform-origin: left center;
   position: relative;
-  left: 234px;
+  left: 230px;
 }
 
 .brand .logo-dot {
@@ -140,24 +140,22 @@ a {
   align-items: center;
   gap: 8px;
   margin-left: auto;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 }
 
 .btn {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 6px;
   padding: 13.5px 16px;
-  font-weight: 500;
-  
+  font-weight: 600;
+  font-size: 14px;
   -webkit-font-smoothing: antialiased;
-  font-size: .875rem;
-  -webkit-text-stroke: 0.5px currentColor; /* 0.2–0.35px to taste */
-  -webkit-text-fill-color: currentColor;
+
 
   text-shadow: none;
   filter: none;
 
-  letter-spacing: normal;
+  letter-spacing: -0.035em; /* subtle tightening */
   color: #e5e7eb;
   background: rgba(255, 255, 255, 0.06);
   font-family: "Aeonik", sans-serif;
@@ -369,7 +367,8 @@ a {
 .promo-card {
   position: relative;
   border-radius: 8px;
-  flex: 0 0 calc((100% - 28px) / 3);
+  /* 3 cards visible with current 16px gaps: (100% - 2*16px) / 3 */
+  flex: 0 0 calc((100% - 32px) / 3);
   min-height: 230px;
   scroll-snap-align: start;
   overflow: hidden;
@@ -641,10 +640,13 @@ a {
   display: flex;
   gap: var(--card-gap);
   overflow-x: auto;
-  padding: 4px 0 8px;
+  overflow-y: visible; /* allow hover lift */
+  padding: 12px 0 8px;
+  margin-top: -12px;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
+  z-index: 3;
 }
 
 .card-row::-webkit-scrollbar {
@@ -689,7 +691,7 @@ a {
   justify-content: flex-end;
   padding: 0;
   box-shadow: none;
-  transition: transform 0.12s ease;
+  transition: transform 0.2s cubic-bezier(0.22, 0.61, 0.36, 1);
   text-decoration: none;
   background-size: cover;
   background-position: center top;
@@ -791,7 +793,7 @@ a {
   transform: rotate(-90deg);
 }
 .game-card:hover {
-  transform: translate3d(0, -4px, 0);
+  transform: translate3d(0, -8px, 0);
 }
 
 .card-badge {
