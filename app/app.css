@@ -138,21 +138,29 @@ a {
 .actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   margin-left: auto;
+  transform: translateY(-1px);
 }
 
 .btn {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 6px;
-  padding: 13.8px 15.8px;
+  padding: 13.5px 16px;
   font-weight: 500;
+  
   -webkit-font-smoothing: antialiased;
-  font-size: 14px;
+  font-size: .875rem;
+  -webkit-text-stroke: 0.5px currentColor; /* 0.2–0.35px to taste */
+  -webkit-text-fill-color: currentColor;
+
+  text-shadow: none;
+  filter: none;
+
   letter-spacing: normal;
   color: #e5e7eb;
   background: rgba(255, 255, 255, 0.06);
-  font-family: "Aeonik", "Poppins", "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-family: "Aeonik", sans-serif;
   cursor: pointer;
   transition: filter 0.1s ease;
 }
@@ -187,7 +195,7 @@ a {
   max-width: none;
   margin: 0;
   height: calc(100vh - 72px);
-  overflow: hidden;
+  overflow: visible; /* allow hover-lifted promos to show fully */
 }
 
 .sidebar {
@@ -291,7 +299,7 @@ a {
   flex-direction: column;
   gap: 16px;
   align-items: center;
-  padding: 13px 32px 24px 16px;
+  padding: 7px 17px 24px 16px;
   box-sizing: border-box;
   height: 100%;
   overflow-y: auto;
@@ -324,7 +332,10 @@ a {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding-top: 12px;
+  padding-top: 20px;
+  position: relative;
+  z-index: 25; /* keep hovered cards above top bar */
+  overflow: visible;
 }
 
 .promo-wrap {
@@ -332,14 +343,18 @@ a {
   display: flex;
   align-items: stretch;
   gap: 0;
+  padding-top: 8px;
+  margin-top: -8px;
 }
 
 .promo-carousel {
   position: relative;
   display: flex;
-  gap: 14px;
+  gap: 16px;
   overflow-x: auto;
-  padding: 0;
+  overflow-y: visible;
+  padding: 8px 0 0 0;
+  margin-top: -8px;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
   width: 100%;
@@ -360,10 +375,10 @@ a {
   overflow: hidden;
   box-shadow: none;
   display: block;
-  transition: transform 0.12s ease;
+  transition: transform 0.2s cubic-bezier(0.22, 0.61, 0.36, 1);
   will-change: transform;
   backface-visibility: hidden;
-  contain: layout style paint;
+  contain: layout style;
 }
 
 .promo-card img {
@@ -375,7 +390,7 @@ a {
 }
 
 .promo-card:hover {
-  transform: translate3d(0, -4px, 0);
+  transform: translate3d(0, -8px, 0);
   box-shadow: none;
   filter: none;
 }
@@ -451,18 +466,18 @@ a {
   align-items: center;
   gap: 8px;
   background: #1f2229;
-  border-radius: 8px;
-  padding: 6px;
+  border-radius: 5px;
+  padding: 7px 2px;
   border: none;
 }
 
 .promo-tab {
-  padding: 8px 16px;
+  padding: 7px 14px;
   border-radius: 6px;
   background: #1f2229;
   color: #bec6d1;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13.5px;
   border: none;
   display: inline-flex;
   align-items: center;
@@ -682,7 +697,7 @@ a {
   background-color: #0b0f16;
   will-change: transform;
   backface-visibility: hidden;
-  contain: layout style paint;
+  contain: layout style;
 }
 
 .game-card::after {
